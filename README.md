@@ -39,6 +39,7 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 ### Jenkins and GitHub
 **GitHub Webhook Trigger:**
 - Code push triggers Jenkins automatically.
+
 **Source Code Retrieval:**
 - Jenkins pulls the latest version of the repository from GitHub.
 <img width="942" height="355" alt="image" src="https://github.com/user-attachments/assets/18ca4c0b-c21f-4338-901c-d9b7130471f8" />
@@ -46,6 +47,7 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 ### SonarQube Scanning
 **SonarQube Code Analysis:**
 - The pipeline runs a SonarQube scan to analyze code quality and detect potential issues.
+
 **Conditional Deployment:**
 - If the scan completes successfully, Jenkins proceeds with the deployment stage.
 <img width="290" height="233" alt="image" src="https://github.com/user-attachments/assets/7e2a8daf-aa58-4efb-b119-3ae48486ec4d" />
@@ -53,11 +55,13 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 ### Docker
 **Docker Image Build:**
 - Jenkins connects to the Docker server via SSH and builds a Docker image from the repository.
+
 **Container Deployment:**
 - The previous container (if any) is removed.
 - A new container is started using the updated image.
 <img width="925" height="177" alt="image" src="https://github.com/user-attachments/assets/3f4f7b45-c22a-4b15-af39-67723d45fa67" />
-7. **Application Availability:**
+
+**Application Availability:**
 - The web application becomes accessible via the Docker server on port 8085.
 <img width="1899" height="867" alt="image" src="https://github.com/user-attachments/assets/6309ffae-c8dc-46e1-bcf8-e9fc90413f46" />
 
