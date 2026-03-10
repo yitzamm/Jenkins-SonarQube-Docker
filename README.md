@@ -36,6 +36,7 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 - The ports 8080, 9000 and 8085:80 were respectively opened for each one of the instances
 <img width="778" height="206" alt="image" src="https://github.com/user-attachments/assets/4f3c7790-cb42-471e-a9ac-c669c8064bfe" />
 
+### Jenkins and GitHub
 **GitHub Webhook Trigger:**
 - Code push triggers Jenkins automatically.
 **Source Code Retrieval:**
@@ -56,7 +57,6 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 - The previous container (if any) is removed.
 - A new container is started using the updated image.
 <img width="925" height="177" alt="image" src="https://github.com/user-attachments/assets/3f4f7b45-c22a-4b15-af39-67723d45fa67" />
-
 7. **Application Availability:**
 - The web application becomes accessible via the Docker server on port 8085.
 <img width="1899" height="867" alt="image" src="https://github.com/user-attachments/assets/6309ffae-c8dc-46e1-bcf8-e9fc90413f46" />
