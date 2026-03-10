@@ -30,28 +30,33 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 
 ## Pipeline Workflow
 
-<img width="783" height="205" alt="image" src="https://github.com/user-attachments/assets/74f1d324-ad5a-4e89-a61b-0865e7f60b36" />
-
+### AWS EC2
+**Instance set-up:**
+- 3 instances were created for the Jenkins, SonarQube and Docker servers
+- The ports 8080, 9000 and 8085:80 were respectively opened for each one of the instances
 <img width="290" height="233" alt="image" src="https://github.com/user-attachments/assets/7e2a8daf-aa58-4efb-b119-3ae48486ec4d" />
 
-<img width="925" height="177" alt="image" src="https://github.com/user-attachments/assets/3f4f7b45-c22a-4b15-af39-67723d45fa67" />
-
-1. **GitHub Webhook Trigger:**
+**GitHub Webhook Trigger:**
 - Code push triggers Jenkins automatically.
-2. **Source Code Retrieval:**
+**Source Code Retrieval:**
 - Jenkins pulls the latest version of the repository from GitHub.
-3. **SonarQube Code Analysis:**
+
+### SonarQube Scanning
+**SonarQube Code Analysis:**
 - The pipeline runs a SonarQube scan to analyze code quality and detect potential issues.
-4. **Conditional Deployment:**
+**Conditional Deployment:**
 - If the scan completes successfully, Jenkins proceeds with the deployment stage.
-5. **Docker Image Build:**
+
+### Docker
+**Docker Image Build:**
 - Jenkins connects to the Docker server via SSH and builds a Docker image from the repository.
-6. **Container Deployment:**
+**Container Deployment:**
 - The previous container (if any) is removed.
 - A new container is started using the updated image.
+<img width="925" height="177" alt="image" src="https://github.com/user-attachments/assets/3f4f7b45-c22a-4b15-af39-67723d45fa67" />
+
 7. **Application Availability:**
 - The web application becomes accessible via the Docker server on port 8085.
-
 <img width="1899" height="867" alt="image" src="https://github.com/user-attachments/assets/6309ffae-c8dc-46e1-bcf8-e9fc90413f46" />
 
 ## Security and Access
