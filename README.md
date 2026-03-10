@@ -34,18 +34,20 @@ This setup replicates a realistic multi-node CI/CD workflow commonly used in mod
 **Instance set-up:**
 - 3 instances were created for the Jenkins, SonarQube and Docker servers
 - The ports 8080, 9000 and 8085:80 were respectively opened for each one of the instances
-<img width="290" height="233" alt="image" src="https://github.com/user-attachments/assets/7e2a8daf-aa58-4efb-b119-3ae48486ec4d" />
+<img width="778" height="206" alt="image" src="https://github.com/user-attachments/assets/4f3c7790-cb42-471e-a9ac-c669c8064bfe" />
 
 **GitHub Webhook Trigger:**
 - Code push triggers Jenkins automatically.
 **Source Code Retrieval:**
 - Jenkins pulls the latest version of the repository from GitHub.
+<img width="942" height="355" alt="image" src="https://github.com/user-attachments/assets/18ca4c0b-c21f-4338-901c-d9b7130471f8" />
 
 ### SonarQube Scanning
 **SonarQube Code Analysis:**
 - The pipeline runs a SonarQube scan to analyze code quality and detect potential issues.
 **Conditional Deployment:**
 - If the scan completes successfully, Jenkins proceeds with the deployment stage.
+<img width="290" height="233" alt="image" src="https://github.com/user-attachments/assets/7e2a8daf-aa58-4efb-b119-3ae48486ec4d" />
 
 ### Docker
 **Docker Image Build:**
