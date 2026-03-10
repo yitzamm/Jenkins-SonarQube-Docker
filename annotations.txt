@@ -1,0 +1,170 @@
+Jenkins-SonarQube-Docker
+
+1. Create 3 EC2 instances in the AWS console for Jenkins, SonarQube and Docker respectively
+2. Create an SSH key pair to access the VM remotely
+NOTE: Use the t2-medium instance size
+3. Go to WSL:
+
+cd ~/Downloads/ *
+chmod 400 ssh-key-pair.pem (grant read-only access to the file owner only)
+ssh -i ssh-key-pair.pem ubuntu@52.201.245.10 (default user)
+
+4. Installing Jenkins:
+
+Documentation: https://www.jenkins.io/doc/book/installing/linux/#debianubuntu
+
+Java:
+sudo apt update
+sudo apt install fontconfig openjdk-21-jre
+java -version
+
+Jenkins LTS
+sudo wget -O /etc/apt/keyrings/jenkins-keyring.asc \
+  https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key
+echo "deb [signed-by=/etc/apt/keyrings/jenkins-keyring.asc]" \
+  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+  /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt update
+sudo apt install Jenkins
+
+Verify installation with: systemctl status Jenkins
+
+5. Open port 8080 for Jenkins' EC2 instance
+6. Gather Jenkins' access key: sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+7. Create a free-style project and enable GitHub hook trigger for GITSCM polling
+8. On GitHub go to Settings > WebHooks and use the instance IP+port in the payload URL field: http://52.201.245.10:8080/github-webhook/
+Additionally, use the select individual events also and check both Pull and Push requests
+8. Create a new file in the Git repository to test the webhook
+9. Access the SonarQube instance from a new tab: ssh -i ssh-key-pair.pem ubuntu@100.27.210.125
+10. Update both instance hostnames:
+
+JENKINS INSTANCE
+sudo hostnamectl set-hostname jenkins
+/bin/bash
+
+SONARQUBE INSTANCE
+sudo hostnamectl set-hostname sonarqube
+/bin/bash
+
+11. From the SonarQube instance run:
+
+sudo apt update
+sudo apt install openjdk-17-jdk (SonarQube commonly runs with JDK 17)
+wget https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-9.9.4.87374.zip
+ls
+sudo apt install unzip
+unzip sonarqube-9.9.4.87374.zip
+ls
+cd sonarqube-9.9.4.87374.zip/
+ls
+cd bin/
+ls
+cd linux-x86-64/
+ls
+./sonar.sh console (pass the console parameter to get the logs)
+
+12. Open port 9000 for SonarQube's EC2 instance
+13. Access SonarQube: http://100.27.210.125:9000
+username: admin (default)
+password: admin (default)
+
+14. Give your project a name, and select the respective CI (Jenkins) along with source code (GitHub). Copy the project key for later use:
+sonar.projectKey=My-Website
+
+15. Go to My Account > Security and create a global token:
+sqa_d1623a5f64e7ad0197d592abc504b04e294cc31d
+
+16. Back to Jenkins, install the SonarQube Scan and SSH2 plugins
+17. Once installed, go to Tools and scroll to the SonarScanner for MSBuild section, give it a name and hit Save
+18. Navigate to System, scroll to SonarQube, give it a name and the respective URL: http://100.27.210.125:9000/
+19. Now, go back to the Jenkins pipeline, click on Configure and under the Build steps section select "Execute SonarQube Scanner". Use Sonar's project key in the "Analysis properties" field.
+21. In System settings, it's time to add a server authentication token for the Sonar-Server. The credentials type would be secret text. Use Sonar's global token from earlier in the secret field, give it any ID and save.
+22. Test the pipeline
+23. Access Docker's EC2 instance via SSH following the same set of steps and update the hostname.
+
+ssh -i ssh-key-pair.pem ubuntu@3.91.69.132
+sudo hostnamectl set-hostname docker-server
+/bin/bash
+Docker Installation Documentation Guide: https://docs.docker.com/engine/install/ubuntu/
+
+NOTE: The -i flag specifies the identity (private key file) to the remote server.
+
+24. From the Jenkins server switch to the Jenkins user: sudo su Jenkins
+25. From the Docker server switch to the root user: sudo su
+26. Access the SSH config file: nano /etc/ssh/sshd_config, uncomment the PubkeyAuthentication yes line as well as the PasswordAuthentication yes one
+NOTE: To exit the nano editor and save the changes, hit Ctrl + X, Y and ENTER
+27. Restart the sshd service: systemctl restart ssh
+
+ERROR: Permission denied (publickey).
+
+TS: Sometimes cloud images override SSH settings in another file:
+
+ls /etc/ssh/sshd_config.d
+nano /etc/ssh/sshd_config.d/60-cloudimg-settings.conf
+Changed "PasswordAuthentication" to yes
+systemctl restart ssh
+passwd ubuntu
+**Create pwd**
+ssh ubuntu@3.91.69.132
+exit
+
+28. Generate a new SSH key:
+
+ssh-keygen (keep everything to its default value)
+ssh-copy-id ubuntu@3.91.69.132
+
+29. Back to Jenkins > System and scroll down to Server Groups Center, create a server group list, give it any name and enter the ubuntu username (default value) along with the created password
+30. Add a Server List, use the name of the server group created, give a name to the server and use the public IP of the Docker's EC2 instance
+31. Go to the automated-pipeline > Configure and add a new build step "Remote Shell", the target server should auto-populate, for the shell command do: touch test.txt
+
+ERROR: Unable to access http://100.27.210.125:9000/, ERR_CONNECTION_REFUSED.
+
+TS:
+ssh -i ssh-key-pair.pem ubuntu@100.27.210.125
+sudo systemctl status SonarQube
+ps -ef | grep sonar
+sudo ss -tulpn | grep 9000
+
+Fix: SonarQube stopped running unexpectedly
+cd ~/sonarqube-9.9.4.87374/bin/linux-x86-64
+./sonar.sh start
+./sonar.sh status
+
+Test: Run the pipeline and check if we have the test.txt file inside the Docker instance
+
+32. Create a Dockerfile on GitHub
+Documentation guide: https://hub.docker.com/_/nginx
+33. Create a website folder inside the Docker server: mkdir website
+34. Change the ownership of the dir to be owned by the ubuntu user: sudo chown -R ubuntu:ubuntu website
+35. Go back to Jenkins > automated-pipeline > Configure and replace the Remote Shell with an Execute Shell step: scp -r ./* ubuntu@3.91.69.132:~/website/
+36. Create a user group:
+
+sudo usermod -aG docker ubuntu
+newgrp docker
+docker ps
+
+37. Add a Remote Shell step to the build stage. Here we'll create the image and run the container:
+
+cd /home/ubuntu/website
+docker build -t mywebsite .
+docker run -d -p 8085:80 --name=Yitza-Website mywebsite
+
+38. Open the port 8085 for the Docker instance.
+
+WEBSITE ERROR: My index file lives inside the web-app dir, so I ran into a mapping issue in the Dockerfile, which made it default to NGINX's welcome page. To fix it, I changed the copy directive from COPY . /usr/share/nginx/html/ to:
+
+FROM nginx
+COPY ./web-app/ /usr/share/nginx/html/ (letting it know exactly where the index file was)
+
+BUILD ERROR: docker: Error response from daemon: Conflict. The container name "/Yitza-Website" is already in use by container "9b033824295952a0f13e4603898a3d78766704ec4196f6bfce00606ea32879e4". You have to remove (or rename) that container to be able to reuse that name.
+
+FIX: I had to add a related operator to the remote shell asking it to stop and remove any container with a matching name before attempting to start a new one:
+
+cd /home/ubuntu/website
+
+docker build -t mywebsite .
+
+docker stop Yitza-Website || true
+docker rm Yitza-Website || true
+
+docker run -d -p 8085:80 --name Yitza-Website mywebsite
