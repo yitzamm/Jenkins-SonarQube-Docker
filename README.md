@@ -13,6 +13,8 @@ The environment was built using three separate EC2 instances to simulate a distr
 
 This setup replicates a realistic multi-node CI/CD workflow commonly used in modern DevOps environments.
 
+Link to Jenkins CI/CD Pipelines from Aareez Asif: https://www.youtube.com/watch?v=361bfIvXMBI
+
 ## Architecture Diagram
 
 <img width="541" height="223" alt="Jenkins end-to-end diagram" src="https://github.com/user-attachments/assets/7046a835-38d8-4631-a7aa-a4a8b579640c" />
