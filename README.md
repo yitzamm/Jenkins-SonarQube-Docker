@@ -1,15 +1,15 @@
 # Jenkins-SonarQube-Docker
 
-March 11, 2026
+March 8, 2026
 
 This project demonstrates a complete CI/CD pipeline using Jenkins integrated with SonarQube for code quality analysis and Docker for application deployment, all running on AWS EC2 infrastructure.
 
 Jenkins retrieves application code from a GitHub repository, performs a SonarQube static code analysis, and if the quality checks pass, automatically deploys the application by building a Docker image and running a container on a remote server.
 
 The environment was built using three separate EC2 instances to simulate a distributed DevOps architecture:
-- Jenkins Server – CI/CD orchestration and pipeline execution
-- SonarQube Server – static code analysis and quality gates
-- Docker Server – application deployment and container runtime
+- **Jenkins Server –** CI/CD orchestration and pipeline execution
+- **SonarQube Server –** static code analysis and quality gates
+- **Docker Server –** application deployment and container runtime
 
 This setup replicates a realistic multi-node CI/CD workflow commonly used in modern DevOps environments.
 
@@ -91,14 +91,24 @@ docker rm -f Yitza-Website || true
 docker run -d -p 8085:80 --name Yitza-Website mywebsite
 ```
 
-## What I Learned
+## Limitations and Suggested Improvements
 
-This project helped reinforce several important DevOps concepts:
+### Single Point of Failure
 
-- Building multi-server CI/CD environments using AWS EC2
-- Integrating SonarQube into Jenkins pipelines for automated code quality analysis
-- Configuring GitHub webhooks to trigger CI pipelines
-- Automating application deployment using Docker containers
-- Using SSH keys for secure server-to-server communication
-- Troubleshooting Linux permissions, Docker container conflicts, and SSH authentication issues
-- Managing remote deployments through Jenkins pipelines
+In the current implementation, the CI/CD infrastructure is deployed using single instances for each service, including:
+
+- Jenkins
+- Docker host
+- SonarQube
+
+While this setup is sufficient for demonstrating the pipeline functionality, it introduces a single point of failure. If any of these instances becomes unavailable, the CI/CD pipeline would be interrupted until the service is restored.
+
+### Suggested Improvement
+
+A more resilient architecture could improve availability by introducing redundancy and orchestration.
+
+Possible improvements include:
+
+- Running multiple replicas of application workloads
+- Using load balancing to distribute traffic across instances
+- Deploying services using container orchestration platforms such as Kubernetes
