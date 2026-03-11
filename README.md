@@ -34,8 +34,8 @@ Link to Jenkins CI/CD Pipelines from Aareez Asif: https://www.youtube.com/watch?
 
 ### AWS EC2
 **Instance set-up:**
-- 3 instances were created for the Jenkins, SonarQube and Docker servers
-- The ports 8080, 9000 and 8085:80 were respectively opened for each one of the instances
+- 3 instances were created for the Jenkins, SonarQube and Docker servers.
+- The ports 8080, 9000 and 8085:80 were respectively opened for each one of the instances.
 <img width="778" height="206" alt="image" src="https://github.com/user-attachments/assets/4f3c7790-cb42-471e-a9ac-c669c8064bfe" />
 
 ### Jenkins and GitHub
