@@ -1,6 +1,6 @@
 # Jenkins-SonarQube-Docker
 
-Octubre 3, 2026
+March 11, 2026
 
 This project demonstrates a complete CI/CD pipeline using Jenkins integrated with SonarQube for code quality analysis and Docker for application deployment, all running on AWS EC2 infrastructure.
 
