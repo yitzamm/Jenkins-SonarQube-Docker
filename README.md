@@ -4,7 +4,7 @@ March 11, 2026
 
 This project demonstrates a complete CI/CD pipeline using Jenkins integrated with SonarQube for code quality analysis and Docker for application deployment, all running on AWS EC2 infrastructure.
 
-The pipeline retrieves application code from a GitHub repository, performs a SonarQube static code analysis, and if the quality checks pass, automatically deploys the application by building a Docker image and running a container on a remote server.
+Jenkins retrieves application code from a GitHub repository, performs a SonarQube static code analysis, and if the quality checks pass, automatically deploys the application by building a Docker image and running a container on a remote server.
 
 The environment was built using three separate EC2 instances to simulate a distributed DevOps architecture:
 - Jenkins Server – CI/CD orchestration and pipeline execution
@@ -13,7 +13,7 @@ The environment was built using three separate EC2 instances to simulate a distr
 
 This setup replicates a realistic multi-node CI/CD workflow commonly used in modern DevOps environments.
 
-Link to Jenkins CI/CD Pipelines from Aareez Asif: https://www.youtube.com/watch?v=361bfIvXMBI
+Link to Jenkins CI/CD from Aareez Asif: https://www.youtube.com/watch?v=361bfIvXMBI
 
 ## Architecture Diagram
 
@@ -30,7 +30,7 @@ Link to Jenkins CI/CD Pipelines from Aareez Asif: https://www.youtube.com/watch?
 - **SSH –** Secure communication between servers
 - **Linux (Ubuntu)** – Operating system for all instances
 
-## Pipeline Workflow
+## Project Workflow
 
 ### AWS EC2
 **Instance set-up:**
